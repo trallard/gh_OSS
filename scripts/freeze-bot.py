@@ -7,10 +7,11 @@ if __name__ == "__main__":
     assert bot_phrase, "Error: you have not provided a BOT_PHRASE"
 
     owner, repository = os.getenv("GITHUB_REPOSITORY").split("/")
+    event_data = os.getenv("GITHUB_EVENT_PATH")
 
     # load the event payload to check details
 
-    event_payload = json.load(GITHUB_EVENT_PATH)
+    event_payload = json.load(event_data)
 
     comment_text = event_payload["comment"]
     issue_data = event_payload["issue"]
