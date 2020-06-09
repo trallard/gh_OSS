@@ -28,4 +28,5 @@ jobs:
         id: prcomment
 
       - name: To freeze or not to freeze
+        if: env.TRIGGER_ACTION == 'True'
         run: echo "Winter is coming indeed! Triggered by ${NAME} and trigger is ${TRIGGER_ACTION}"
