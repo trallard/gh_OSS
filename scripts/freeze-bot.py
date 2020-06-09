@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
     comment_text = event_payload["comment"]
     issue_data = event_payload["issue"]
+    username = comment_text["user"]["login"]
 
     trigger_action = False
 
@@ -23,10 +24,5 @@ if __name__ == "__main__":
 
         print("Trigger phrase detected -- triggering refreeze")
 
-        head_branch = response.json()['head']['ref']
-        head_sha = response.json()['head']['sha']
-
     print(f"::set-env name=TRIGGER_ACTION::{trigger_action}")
-    print(f"::set-env name=NAME::{comment_text["user"]["login"]}")
-    print(f"::set-env name=BRANCH::{comment_text["user"]["login"]}")
-    print(f"::set-env name=SHA::{comment_text["user"]["login"]}")
+    print(f"::set-env name=NAME::{username}")
