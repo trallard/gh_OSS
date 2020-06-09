@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     # load the event payload to check details
     with open(event_data, "r") as f:
-        event_payload = json.load(event_data)
+        event_payload = json.load(f)
 
     comment_text = event_payload["comment"]
     issue_data = event_payload["issue"]
