@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: Set Python
         uses: actions/setup-python@v2
@@ -21,10 +21,10 @@ jobs:
           python -m pip install --upgrade pip ruamel.yaml
 
       - name: Monitor comments
-        with:
-          BOT_PHRASE: "/winter-is-coming"
         run: |
           python ./scripts/freeze-bot.py
+        env:
+          BOT_PHRASE: "/winter-is-coming"
         id: prcomment
 
       - name: To freeze or not to freeze
