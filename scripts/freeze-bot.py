@@ -24,4 +24,4 @@ if __name__ == "__main__":
 
     print(f"::set-output name=PULL_REQUEST_NUMBER::{issue_data['number']}")
     print(f"::set-output name=TRIGGER_ACTION::{trigger_action}")
-    print(f"Triggered by "{comment_text['user']['login']})
+    print(f"Triggered by {comment_text['user']['login']}")
