@@ -69,7 +69,7 @@ def freeze(env_file, frozen_file):
             "run",
             "--rm",
             "-v" f"{HERE}:/r2d",
-            "-it",
+            "-i",
             f"continuumio/miniconda3:{MINICONDA_DOCKER_VERSION}",
             "sh",
             "-c",
