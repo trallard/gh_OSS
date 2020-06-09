@@ -1,6 +1,8 @@
 name: Freeze bot
 
 on:
+  pull_request:
+    types: [opened]
   issue_comment:
     types: [created]
 
@@ -10,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set Python
         uses: actions/setup-python@v2
@@ -25,11 +29,19 @@ jobs:
         run: |
           python ./scripts/freeze-bot.py
         env:
-          BOT_PHRASE: "/winter-is-coming"
+          BOT_PHRASE: "@jovyan-bot winter-is-coming"
         id: prcomment
 
       - name: To freeze or not to freeze
         if: env.TRIGGER_ACTION == 'True'
         run: |
           echo "Re-freeze triggered by ${NAME}"
-          python repo2docker/buildpacks/conda/freeze-bot.py
+          python repo2docker/buildpacks/conda/freeze.py
+
+      - name: Commit the re freezed buildpack
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "jovyan bot"
+          git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
+          git commit -m "Refreezed conda buildpack" 
+          git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${GITHUB_REF#refs/heads/}
