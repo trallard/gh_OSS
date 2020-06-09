@@ -24,6 +24,6 @@ if __name__ == "__main__":
 
         print("Trigger phrase detected -- triggering refreeze")
 
-    print(f"::set-output name=TRIGGER_ACTION::{trigger_action}")
-    print(f"::set-output name=NAME::{username}")
+    print(f"::set-env name=TRIGGER_ACTION::{trigger_action}")
+    print(f"::set-env name=NAME::{username}")
     print(f"Triggered by {username}")

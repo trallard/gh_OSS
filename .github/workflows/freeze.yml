@@ -28,4 +28,4 @@ jobs:
         id: prcomment
 
       - name: To freeze or not to freeze
-        run: echo "Winter is coming indeed! Triggered by ${NAME}"
+        run: echo "Winter is coming indeed! Triggered by ${NAME} and trigger is ${TRIGGER_ACTION}"
