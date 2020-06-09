@@ -28,5 +28,5 @@ jobs:
         id: prcomment
 
       - name: To freeze or not to freeze
-        if: steps.prcomment.TRIGGER_ACTION == 'true'
-        run: echo "Winter is coming indeed! This"
+        if: steps.prcomment.TRIGGER_ACTION == 'True'
+        run: echo "Winter is coming indeed! "

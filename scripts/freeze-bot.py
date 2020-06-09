@@ -23,6 +23,5 @@ if __name__ == "__main__":
 
         print("Trigger phrase detected -- triggering refreeze")
 
-    print(f"::set-output name=PULL_REQUEST_NUMBER::{issue_data['number']}")
     print(f"::set-output name=TRIGGER_ACTION::{trigger_action}")
     print(f"Triggered by {comment_text['user']['login']}")
