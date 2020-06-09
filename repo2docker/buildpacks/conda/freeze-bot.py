@@ -7,11 +7,10 @@ if __name__ == "__main__":
     assert bot_phrase, "Error: you have not provided a BOT_PHRASE"
 
     owner, repository = os.getenv("GITHUB_REPOSITORY").split("/")
-    event_data = os.getenv("GITHUB_EVENT_PATH")
 
     # load the event payload to check details
-    with open(event_data, "r") as f:
-        event_payload = json.load(f)
+
+    event_payload = json.load("GITHUB_EVENT_PATH")
 
     comment_text = event_payload["comment"]
     issue_data = event_payload["issue"]
@@ -23,10 +22,5 @@ if __name__ == "__main__":
 
         print("Trigger phrase detected -- triggering refreeze")
 
-        head_branch = response.json()['head']['ref']
-        head_sha = response.json()['head']['sha']
-
-    print(f"::set-env name=TRIGGER_ACTION::{trigger_action}")
-    print(f"::set-env name=NAME::{comment_text["user"]["login"]}")
-    print(f"::set-env name=BRANCH::{comment_text["user"]["login"]}")
-    print(f"::set-env name=SHA::{comment_text["user"]["login"]}")
+    print(f"::set-output name=PULL_REQUEST_NUMBER::{issue_data['number']}")
+    print(f"::set-output name=TRIGGER_ACTION::{trigger_action}")

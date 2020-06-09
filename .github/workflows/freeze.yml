@@ -21,6 +21,7 @@ jobs:
           python -m pip install --upgrade pip ruamel.yaml
 
       - name: Monitor comments
+        if: contains(github.event.comment.html_url, '/pull/')
         run: |
           python ./scripts/freeze-bot.py
         env:
@@ -29,4 +30,6 @@ jobs:
 
       - name: To freeze or not to freeze
         if: env.TRIGGER_ACTION == 'True'
-        run: echo "Winter is coming indeed! Triggered by ${NAME} and trigger is ${TRIGGER_ACTION}"
+        run: |
+          echo "Re-freeze triggered by ${NAME}"
+          python repo2docker/buildpacks/conda/freeze-bot.py
