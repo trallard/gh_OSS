@@ -20,8 +20,7 @@ jobs:
         id: prcomment
         with:
           BOT_PHRASE: "/winter-is-coming"
-        run: |
-          python ./scripts/freeze-bot.py
+        run: python ./scripts/freeze-bot.py
       - name: To freeze or not to freeze
         if: steps.prcomment.TRIGGER_ACTION == 'true'
         run: echo "Winter is coming indeed! This"
