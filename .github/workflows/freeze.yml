@@ -24,4 +24,4 @@ jobs:
           python ./scripts/freeze-bot.py
       - name: To freeze or not to freeze
         if: steps.prcomment.TRIGGER_ACTION == 'true'
-        run: echo "Winter is coming indeed!"
+        run: echo "Winter is coming indeed! This"
