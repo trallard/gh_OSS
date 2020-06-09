@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
     comment_text = event_payload["comment"]
     issue_data = event_payload["issue"]
+    username = comment_text["user"]["login"]
 
     trigger_action = False
 
@@ -24,4 +25,5 @@ if __name__ == "__main__":
         print("Trigger phrase detected -- triggering refreeze")
 
     print(f"::set-output name=TRIGGER_ACTION::{trigger_action}")
-    print(f"Triggered by {comment_text['user']['login']}")
+    print(f"::set-output name=NAME::{username}")
+    print(f"Triggered by {username}")
