@@ -10,8 +10,8 @@ if __name__ == "__main__":
     event_data = os.getenv("GITHUB_EVENT_PATH")
 
     # load the event payload to check details
-
-    event_payload = json.load(event_data)
+    with open(event_data, "r") as f:
+        event_payload = json.load(event_data)
 
     comment_text = event_payload["comment"]
     issue_data = event_payload["issue"]
