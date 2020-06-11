@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set Python
         uses: actions/setup-python@v2
@@ -37,12 +35,23 @@ jobs:
         run: |
           echo "Re-freeze triggered by ${NAME}"
           python repo2docker/buildpacks/conda/freeze.py
+          echo $ {{ github.head_ref }}
 
-      - name: Commit the re freezed buildpack
+      # - name: Commit the re freezed buildpack
+      #   if: env.TRIGGER_ACTION == 'True'
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "Github actions bot"
+      #     git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
+      #     git commit -m "Refreezed conda buildpack"
+      #     git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref }}
+
+      - name: Add comment
         if: env.TRIGGER_ACTION == 'True'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "jovyan bot"
-          git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
-          git commit -m "Refreezed conda buildpack" 
-          git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${GITHUB_REF#refs/heads/}
+        uses: jungwinter/comment@v1
+        id: create
+        with:
+          type: create
+          body: "Refreeze successful!"
+          issue_number: "${{ github.event.comment.number }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
