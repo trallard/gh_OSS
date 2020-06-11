@@ -26,7 +26,7 @@ jobs:
         if: contains(github.event.comment.html_url, '/pull/')
         run: |
           python ./scripts/freeze-bot.py
-          echo $ {{ github.head_ref }}
+          echo ${{ github.head_ref }}
         env:
           BOT_PHRASE: "@jovyan-bot winter-is-coming"
         id: prcomment
@@ -53,5 +53,7 @@ jobs:
         with:
           type: create
           body: "Refreeze successful!"
-          issue_number: "${{ github.event.comment.number }}"
+          issue_number: $ISSUE_NUMBER
           token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          ISSUE_NUMBER: ${{ github.event.comment.number }}
