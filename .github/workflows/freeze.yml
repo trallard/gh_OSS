@@ -26,16 +26,16 @@ jobs:
         if: contains(github.event.comment.html_url, '/pull/')
         run: |
           python ./scripts/freeze-bot.py
+          echo $ {{ github.head_ref }}
         env:
           BOT_PHRASE: "@jovyan-bot winter-is-coming"
         id: prcomment
 
-      - name: To freeze or not to freeze
-        if: env.TRIGGER_ACTION == 'True'
-        run: |
-          echo "Re-freeze triggered by ${NAME}"
-          python repo2docker/buildpacks/conda/freeze.py
-          echo $ {{ github.head_ref }}
+      # - name: To freeze or not to freeze
+      #   if: env.TRIGGER_ACTION == 'True'
+      #   run: |
+      #     echo "Re-freeze triggered by ${NAME}"
+      #     python repo2docker/buildpacks/conda/freeze.py
 
       # - name: Commit the re freezed buildpack
       #   if: env.TRIGGER_ACTION == 'True'
