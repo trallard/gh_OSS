@@ -2,7 +2,7 @@ name: Freeze bot
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened]
   issue_comment:
     types: [created]
 
@@ -10,8 +10,10 @@ jobs:
   refreeze:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout PR branch
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha}}
 
       - name: Set Python
         uses: actions/setup-python@v2
@@ -25,10 +27,10 @@ jobs:
       - name: Monitor comments
         if: contains(github.event.comment.html_url, '/pull/')
         run: |
-          python ./scripts/freeze-bot.py
-          echo ${{ github.head_ref }}
+          # python ./scripts/freeze-bot.py
+          echo ${{ github.event.comment.html_url }}
         env:
-          BOT_PHRASE: "@jovyan-bot winter-is-coming"
+          BOT_PHRASE: "@bot please refreeze"
         id: prcomment
 
       # - name: To freeze or not to freeze
@@ -39,7 +41,7 @@ jobs:
 
       # - name: Commit the re freezed buildpack
       #   if: env.TRIGGER_ACTION == 'True'
-      #   run: |
+      #   run:
       #     git config --local user.email "action@github.com"
       #     git config --local user.name "Github actions bot"
       #     git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
@@ -48,12 +50,13 @@ jobs:
 
       - name: Add comment
         if: env.TRIGGER_ACTION == 'True'
-        uses: jungwinter/comment@v1
-        id: create
+        uses: actions/github-script@v2
         with:
-          type: create
-          body: "Refreeze successful!"
-          issue_number: $ISSUE_NUMBER
-          token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          ISSUE_NUMBER: ${{ github.event.comment.number }}
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Hello there!'
+            })
