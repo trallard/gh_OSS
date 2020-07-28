@@ -18,7 +18,7 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v2
         with:
-          ref: $BRANCH_NAME
+          ref: ${{ env.BRANCH_NAME }}
 
       - name: Set Python
         uses: actions/setup-python@v2
