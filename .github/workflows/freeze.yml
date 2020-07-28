@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha}}
 
       - name: Set Python
         uses: actions/setup-python@v2
@@ -27,7 +25,7 @@ jobs:
       - name: Monitor comments
         if: contains(github.event.comment.html_url, '/pull/')
         run: |
-          # python ./scripts/freeze-bot.py
+          python ./scripts/freeze-bot.py
           echo ${{ github.event.comment.html_url }}
         env:
           BOT_PHRASE: "@bot please refreeze"
