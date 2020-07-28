@@ -27,12 +27,14 @@ jobs:
         run: |
           python ./scripts/freeze-bot.py
           echo ${{ github.event.issue.pull_request.url }}
-          echo ${{ github.event.issue.pull_request.base_ref }}
-          echo ${{ github.event.issue.pull_request.head_ref }}
 
         env:
           BOT_PHRASE: "@bot please refreeze"
         id: prcomment
+
+      - name: Get upstream
+        run: |
+          echo "::set-env name=BRANCH_NAME::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.GITHUB_TOKEN }} ${{ github.event.issue.pull_request.url }} | jq '.head.ref' | sed 's/\"//g')"
 
       # - name: To freeze or not to freeze
       #   if: env.TRIGGER_ACTION == 'True'
