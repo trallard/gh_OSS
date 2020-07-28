@@ -39,7 +39,8 @@ jobs:
 
       - name: Commit the re freezed buildpack
         if: env.TRIGGER_ACTION == 'True'
-        run: git config --local user.email "action@github.com"
+        run: |
+          git config --local user.email "action@github.com"
           git config --local user.name "Github actions bot"
           git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
           git commit -m "Refreezed conda buildpack"
