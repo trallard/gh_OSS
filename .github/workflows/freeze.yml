@@ -31,20 +31,19 @@ jobs:
           BOT_PHRASE: "@bot please refreeze"
         id: prcomment
 
-      # - name: To freeze or not to freeze
-      #   if: env.TRIGGER_ACTION == 'True'
-      #   run: |
-      #     echo "Re-freeze triggered by ${NAME}"
-      #     python repo2docker/buildpacks/conda/freeze.py
+      - name: To freeze or not to freeze
+        if: env.TRIGGER_ACTION == 'True'
+        run: |
+          echo "Re-freeze triggered by ${NAME}"
+          python repo2docker/buildpacks/conda/freeze.py
 
-      # - name: Commit the re freezed buildpack
-      #   if: env.TRIGGER_ACTION == 'True'
-      #   run:
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "Github actions bot"
-      #     git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
-      #     git commit -m "Refreezed conda buildpack"
-      #     git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref }}
+      - name: Commit the re freezed buildpack
+        if: env.TRIGGER_ACTION == 'True'
+        run: git config --local user.email "action@github.com"
+          git config --local user.name "Github actions bot"
+          git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
+          git commit -m "Refreezed conda buildpack"
+          git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref }}
 
       - name: Add comment
         if: env.TRIGGER_ACTION == 'True'
