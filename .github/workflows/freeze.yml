@@ -35,7 +35,7 @@ jobs:
         if: env.TRIGGER_ACTION == 'True'
         run: |
           echo "Re-freeze triggered by ${NAME}"
-          python repo2docker/buildpacks/conda/freeze.py
+          python repo2docker/buildpacks/conda/freeze.py "3.8"
 
       - name: Commit the re freezed buildpack
         if: env.TRIGGER_ACTION == 'True'
@@ -55,5 +55,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Hello there!'
+              body: 'Refeeze complete'
             })
