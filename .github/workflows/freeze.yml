@@ -26,8 +26,9 @@ jobs:
         if: contains(github.event.comment.html_url, '/pull/')
         run: |
           python ./scripts/freeze-bot.py
-          echo ${{ github.event.comment.html_url }}
           echo ${{ github.event.issue.pull_request.url }}
+          echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
+          echo "$BRANCH_NAME"
         env:
           BOT_PHRASE: "@bot please refreeze"
         id: prcomment
