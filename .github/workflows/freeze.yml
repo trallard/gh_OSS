@@ -10,8 +10,15 @@ jobs:
   refreeze:
     runs-on: ubuntu-latest
     steps:
+      - name: Get upstream
+        if: contains(github.event.comment.html_url, '/pull/')
+        run: |
+          echo "::set-env name=BRANCH_NAME::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.GITHUB_TOKEN }} ${{ github.event.issue.pull_request.url }} | jq '.head.ref' | sed 's/\"//g')"
+
       - name: Checkout PR branch
         uses: actions/checkout@v2
+        with:
+          ref: "$BRANCH_NAME"
 
       - name: Set Python
         uses: actions/setup-python@v2
@@ -31,10 +38,6 @@ jobs:
         env:
           BOT_PHRASE: "@bot please refreeze"
         id: prcomment
-
-      - name: Get upstream
-        run: |
-          echo "::set-env name=BRANCH_NAME::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.GITHUB_TOKEN }} ${{ github.event.issue.pull_request.url }} | jq '.head.ref' | sed 's/\"//g')"
 
       # - name: To freeze or not to freeze
       #   if: env.TRIGGER_ACTION == 'True'
