@@ -13,7 +13,18 @@ jobs:
       - name: Get upstream
         if: contains(github.event.comment.html_url, '/pull/')
         run: |
+          # A useful wrapper around CURL
+          crl() {
+            curl --silent --show-error --location --retry 1 "${@:2}" \
+              -H "Accept: application/vnd.github.github.sailor-v-preview, application/vnd.github.v3+json" \
+             "$1"
+          }
+          auth_crl() {
+            crl "$1" -H "authorization: Bearer $GITHUB_TOKEN" "${@:2}"
+          }
           echo "::set-env name=BRANCH_NAME::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.GITHUB_TOKEN }} ${{ github.event.issue.pull_request.url }} | jq '.head.ref' | sed 's/\"//g')"
+          echo ${{ github.repository }}
+          echo ${{ github.ref}}
 
       - name: Checkout PR branch
         uses: actions/checkout@v2
@@ -34,6 +45,7 @@ jobs:
         run: |
           python ./scripts/freeze-bot.py
           echo ${{ github.event.issue.pull_request.url }}
+          echo ${{ github.event.issue.pull_request.head.repo.full_name }}
 
         env:
           BOT_PHRASE: "@bot please refreeze"
@@ -64,5 +76,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Refeeze complete'
+              body: 'Refeeze completed. Check the lst commit before merge.'
             })
