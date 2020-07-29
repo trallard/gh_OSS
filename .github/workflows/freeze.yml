@@ -52,7 +52,7 @@ jobs:
           git config --local user.name "Github actions bot"
           git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
           git commit -m "Refreezed conda buildpack"
-          git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.ref }}
+          git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.BRANCH_NAME }}
 
       - name: Add comment
         if: env.TRIGGER_ACTION == 'True'
