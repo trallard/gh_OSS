@@ -1,6 +1,8 @@
 name: Freeze bot
 
 on:
+  pull_request:
+    types: [opened, reopened]
   issue_comment:
     types: [created]
 
@@ -8,19 +10,59 @@ jobs:
   refreeze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Setup
+      - name: Get upstream
+        if: contains(github.event.comment.html_url, '/pull/')
+        run: |
+          echo "::set-env name=BRANCH_NAME::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.GITHUB_TOKEN }} ${{ github.event.issue.pull_request.url }} | jq '.head.ref' | sed 's/\"//g')"
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+
+      - name: Set Python
         uses: actions/setup-python@v2
         with:
-          python.version: 3.8
+          python-version: 3.8
+
       - name: Install deps
         run: |
           python -m pip install --upgrade pip ruamel.yaml
+
       - name: Monitor comments
+        if: contains(github.event.comment.html_url, '/pull/')
+        run: |
+          python ./scripts/freeze-bot.py
+          echo ${{ github.event.issue.pull_request.url }}
+
+        env:
+          BOT_PHRASE: "@bot please refreeze"
         id: prcomment
+
+      # - name: To freeze or not to freeze
+      #   if: env.TRIGGER_ACTION == 'True'
+      #   run: |
+      #     echo "Re-freeze triggered by ${NAME}"
+      #     python repo2docker/buildpacks/conda/freeze.py "3.8"
+
+      # - name: Commit the re freezed buildpack
+      #   if: env.TRIGGER_ACTION == 'True'
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "Github actions bot"
+      #     git add ${{ github.workspace }}/repo2docker/buildpacks/conda/
+      #     git commit -m "Refreezed conda buildpack"
+      #     git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ github.ref }}
+
+      - name: Add comment
+        if: env.TRIGGER_ACTION == 'True'
+        uses: actions/github-script@v2
         with:
-          BOT_PHRASE: "/winter-is-coming"
-        run: python ./scripts/freeze-bot.py
-      - name: To freeze or not to freeze
-        if: steps.prcomment.TRIGGER_ACTION == 'true'
-        run: echo "Winter is coming indeed!"
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Refeeze complete'
+            })
